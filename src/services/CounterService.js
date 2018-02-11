@@ -2,13 +2,24 @@ import { AsyncStorage } from 'react-native';
 
 class CounterService {
     constructor() {
-        console.log('componentWillMount ctor');
-        AsyncStorage.setItem('counter:list', JSON.stringify([{ a: 'test' }]));
+        AsyncStorage.setItem('counter:list', JSON.stringify([
+            { 
+                id: 'aaa',
+                title: 'test counter 12',
+                desc: 'hardcoded counter for testing',
+                value: 5 
+            },
+            { 
+                id: 'aab',
+                title: 'test counter 2',
+                desc: 'other hardcoded counter for testing',
+                value: 0 
+            }
+        ]));
     }
 
     getCounters() {
-        console.log('componentWillMount get');
-        return AsyncStorage.getItem('counter:list');
+        return AsyncStorage.getItem('counter:list').then(j => JSON.parse(j));
     }
 
     // addCounter(name, description) {

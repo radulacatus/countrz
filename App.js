@@ -1,61 +1,52 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- * @flow
- */
-
 import React, { Component } from 'react';
-import {
-  Platform,
-  StyleSheet,
-  Text,
-  View
-} from 'react-native';
-import Header from './src/components/Header';
-import CounterList from './src/components/CounterList';
 
-const instructions = Platform.select({
-  ios: 'Press Cmd+R to reload,\n' +
-    'Cmd+D or shake for dev menu',
-  android: 'Double tap R on your keyboard to reload,\n' +
-    'Shake or press menu button for dev menu',
-});
+import { Screen, Divider, ListView } from '@shoutem/ui';
+import UITheme from '@shoutem/ui/theme';
+import { StyleProvider } from '@shoutem/theme';
+
+import Header from './src/components/Header';
+import CounterDetail from './src/components/CounterDetail';
+import CounterService from './src/services/CounterService';
+
 
 export default class App extends Component<{}> {
+  state = { counters: [] };
+
+  componentWillMount() {
+      new CounterService().getCounters().then(result => {
+          this.setState({ counters: result });
+      });
+  }
+
   render() {
     return (
-      <View style={styles.container}>
-        <Header text='Countrz' />
-        <CounterList />
-        <Text style={styles.welcome}>
-          Welcome to React Native!
-        </Text>
-        <Text style={styles.instructions}>
-          To get started, edit App.js
-        </Text>
-        <Text style={styles.instructions}>
-          {instructions}
-        </Text>
-      </View>
+      <StyleProvider style={theme}>
+        <Screen>
+          <Header text='Countrz' />
+          <ListView 
+                    data={this.state.counters}
+                    renderRow={c => <CounterDetail key={c.id} counter={c} />}
+                    vertical
+                    pageSize={10}
+                    // snapToInterval={Dimensions.get('window').width}
+                    snapToAlignment="center"
+                    // decelerationRate={2} 
+          />          
+          <Divider styleName="line" />
+        </Screen>
+      </StyleProvider>
     );
   }
 }
 
-const styles = StyleSheet.create({
-  container: {
-    // flex: 1,
-    // justifyContent: 'center',
-    // alignItems: 'center',
-    // backgroundColor: '#F5FCFF',
+const theme = Object.assign(UITheme(), {
+  'shoutem.ui.Title': {
+    color: '#2D3142'
   },
-  welcome: {
-    // fontSize: 20,
-    // textAlign: 'center',
-    // margin: 10,
+  'shoutem.ui.Subtitle': {
+    color: '#2D3142'
   },
-  instructions: {
-    // textAlign: 'center',
-    // color: '#333333',
-    // marginBottom: 5,
-  },
+  'shoutem.ui.Caption': {
+    color: '#2D3142'
+  }
 });
